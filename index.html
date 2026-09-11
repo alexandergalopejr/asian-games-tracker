@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 Asian Games Basketball Live Feed</title>
-    <!-- ✅ FIXED: Correct public PapaParse library address link -->
+    <!-- Read Google Sheets CSV format directly using the PapaParse data library -->
     <script src="https://cloudflare.com"></script>
     <style>
         :root {
@@ -40,7 +40,7 @@
 
         .match-content { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
         .team-row { display: flex; align-items: center; justify-content: space-between; }
-        .winner { font-weight: 700 !important; }
+        .winner { font-weight: 700 !important; color: var(--text-main); }
         .loser { color: var(--text-sub); }
         .team-info { display: flex; align-items: center; gap: 12px; }
         .flag-img { width: 28px; height: 20px; object-fit: cover; border-radius: 2px; border: 1px solid #dadce0; }
@@ -62,6 +62,7 @@
     </div>
 
     <script>
+        // 🔗 Secure public destination link mapped precisely to your personal database deployment
         const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbkaviQRPzlZhZxOLa4SZrInYXBti3K-6qZensvVklX7hIjAJKu23srB37cTI3NVQsk3MU6eLqhHnU/pub?output=csv';
 
         function fetchLiveScores() {
@@ -69,7 +70,6 @@
                 download: true,
                 header: true,
                 skipEmptyLines: true,
-                // ✅ ENHANCEMENT: Automatically normalizes capitalized sheet fields smoothly
                 transformHeader: function(h) { return h.trim().toLowerCase(); },
                 complete: function(results) {
                     renderDashboard(results.data);
@@ -88,7 +88,7 @@
             dashboard.innerHTML = ""; 
 
             if (!gamesData || gamesData.length === 0) {
-                dashboard.innerHTML = '<div class="status-msg">No active game tracks found inside the spreadsheet data rows.</div>';
+                dashboard.innerHTML = '<div class="status-msg">No active match configurations populated inside spreadsheet fields.</div>';
                 return;
             }
 
@@ -99,17 +99,18 @@
                 if (statusStr === "FINAL") statusClass = "status-final";
 
                 let t1Class = "", t2Class = "";
-                const t1Total = parseInt(game.team1total) || 0;
-                const t2Total = parseInt(game.team2total) || 0;
                 
-                if (statusStr === "FINAL") {
+                // Safe numeric parsing prevents code crashes on empty upcoming rows
+                const t1Total = game.team1total ? parseInt(game.team1total) : null;
+                const t2Total = game.team2total ? parseInt(game.team2total) : null;
+                
+                if (statusStr === "FINAL" && t1Total !== null && t2Total !== null) {
                     t1Class = t1Total > t2Total ? "winner" : "loser";
                     t2Class = t2Total > t1Total ? "winner" : "loser";
                 }
 
                 const hasOT = (game.team1ot && game.team1ot.trim() !== "") || (game.team2ot && game.team2ot.trim() !== "");
 
-                // ✅ FIXED: Template bracket mappings repaired, clean width flag variables
                 const cardHtml = `
                     <div class="scoreboard-widget">
                         <div class="widget-header">
@@ -120,7 +121,7 @@
                             <!-- Team 1 Row -->
                             <div class="team-row ${t1Class}">
                                 <div class="team-info">
-                                    <img src="https://flagcdn.com{(game.team1flag || 'un').toLowerCase()}.png" class="flag-img">
+                                    <img src="https://flagcdn.com{(game.team1flag || 'un').toLowerCase()}.png" class="flag-img" alt="">
                                     <span class="team-name">${game.team1name || 'TBD'}</span>
                                 </div>
                                 <div class="scores-container">
@@ -129,7 +130,7 @@
                                         ${game.team1q2 ? `<span class="q-score">${game.team1q2}</span>` : ''}
                                         ${game.team1q3 ? `<span class="q-score">${game.team1q3}</span>` : ''}
                                         ${game.team1q4 ? `<span class="q-score">${game.team1q4}</span>` : ''}
-                                        ${hasOT ? `<span class="q-score ot-score">${game.team1ot}</span>` : ''}
+                                        ${hasOT ? `<span class="q-score ot-score">${game.team1ot || '0'}</span>` : ''}
                                     </div>
                                     <span class="total-score">${game.team1total || '-'}</span>
                                 </div>
@@ -137,7 +138,7 @@
                             <!-- Team 2 Row -->
                             <div class="team-row ${t2Class}">
                                 <div class="team-info">
-                                    <img src="https://flagcdn.com{(game.team2flag || 'un').toLowerCase()}.png" class="flag-img">
+                                    <img src="https://flagcdn.com{(game.team2flag || 'un').toLowerCase()}.png" class="flag-img" alt="">
                                     <span class="team-name">${game.team2name || 'TBD'}</span>
                                 </div>
                                 <div class="scores-container">
@@ -146,7 +147,7 @@
                                         ${game.team2q2 ? `<span class="q-score">${game.team2q2}</span>` : ''}
                                         ${game.team2q3 ? `<span class="q-score">${game.team2q3}</span>` : ''}
                                         ${game.team2q4 ? `<span class="q-score">${game.team2q4}</span>` : ''}
-                                        ${hasOT ? `<span class="q-score ot-score">${game.team2ot}</span>` : ''}
+                                        ${hasOT ? `<span class="q-score ot-score">${game.team2ot || '0'}</span>` : ''}
                                     </div>
                                     <span class="total-score">${game.team2total || '-'}</span>
                                 </div>
@@ -158,6 +159,7 @@
             });
         }
 
+        // Run data pipeline and update values automatically every 10 seconds
         fetchLiveScores();
         setInterval(fetchLiveScores, 10000);
     </script>
