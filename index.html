@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 Asian Games Basketball Live Feed</title>
-    <!-- Read Google Sheets CSV format directly using the PapaParse data library -->
+    <!-- PapaParse reads Google Sheets CSV instantly with zero security roadblocks -->
     <script src="https://cloudflare.com"></script>
     <style>
         :root {
@@ -62,8 +62,7 @@
     </div>
 
     <script>
-        // 🔗 Secure public destination link mapped precisely to your personal database deployment
-        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbkaviQRPzlZhZxOLa4SZrInYXBti3K-6qZensvVklX7hIjAJKu23srB37cTI3NVQsk3MU6eLqhHnU/pub?output=csv';
+        const GOOGLE_SHEET_CSV_URL = 'https://google.com';
 
         function fetchLiveScores() {
             Papa.parse(GOOGLE_SHEET_CSV_URL, {
@@ -87,24 +86,26 @@
             const dashboard = document.getElementById('games-dashboard');
             dashboard.innerHTML = ""; 
 
-            if (!gamesData || gamesData.length === 0) {
-                dashboard.innerHTML = '<div class="status-msg">No active match configurations populated inside spreadsheet fields.</div>';
+            // Filter out completely empty spreadsheet rows safely
+            const validGames = gamesData.filter(g => g.team1name || g.team2name);
+
+            if (validGames.length === 0) {
+                dashboard.innerHTML = '<div class="status-msg">No games found. Please populate data rows inside your Google Sheet.</div>';
                 return;
             }
 
-            gamesData.forEach(game => {
-                const statusStr = (game.status || "").toUpperCase();
+            validGames.forEach(game => {
+                // Fixes code crashes if cells are left entirely blank
+                const statusStr = (game.status || "").trim().toUpperCase();
                 let statusClass = "status-upcoming";
                 if (statusStr === "LIVE") statusClass = "status-live";
                 if (statusStr === "FINAL") statusClass = "status-final";
 
                 let t1Class = "", t2Class = "";
+                const t1Total = game.team1total ? parseInt(game.team1total) : 0;
+                const t2Total = game.team2total ? parseInt(game.team2total) : 0;
                 
-                // Safe numeric parsing prevents code crashes on empty upcoming rows
-                const t1Total = game.team1total ? parseInt(game.team1total) : null;
-                const t2Total = game.team2total ? parseInt(game.team2total) : null;
-                
-                if (statusStr === "FINAL" && t1Total !== null && t2Total !== null) {
+                if (statusStr === "FINAL") {
                     t1Class = t1Total > t2Total ? "winner" : "loser";
                     t2Class = t2Total > t1Total ? "winner" : "loser";
                 }
@@ -114,14 +115,14 @@
                 const cardHtml = `
                     <div class="scoreboard-widget">
                         <div class="widget-header">
-                            <span>${game.stage || 'Basketball Match'}</span>
-                            <span class="status-badge ${statusClass}">${game.timeinfo || ''}</span>
+                            <span>${game.stage || 'Basketball Tournament'}</span>
+                            <span class="status-badge ${statusClass}">${game.timeinfo || 'Upcoming'}</span>
                         </div>
                         <div class="match-content">
                             <!-- Team 1 Row -->
                             <div class="team-row ${t1Class}">
                                 <div class="team-info">
-                                    <img src="https://flagcdn.com{(game.team1flag || 'un').toLowerCase()}.png" class="flag-img" alt="">
+                                    <img src="https://flagcdn.com{(game.team1flag || 'un').trim().toLowerCase()}.png" class="flag-img" onerror="this.src='https://flagcdn.com'">
                                     <span class="team-name">${game.team1name || 'TBD'}</span>
                                 </div>
                                 <div class="scores-container">
@@ -130,7 +131,7 @@
                                         ${game.team1q2 ? `<span class="q-score">${game.team1q2}</span>` : ''}
                                         ${game.team1q3 ? `<span class="q-score">${game.team1q3}</span>` : ''}
                                         ${game.team1q4 ? `<span class="q-score">${game.team1q4}</span>` : ''}
-                                        ${hasOT ? `<span class="q-score ot-score">${game.team1ot || '0'}</span>` : ''}
+                                        ${hasOT ? `<span class="q-score ot-score">${game.team1ot}</span>` : ''}
                                     </div>
                                     <span class="total-score">${game.team1total || '-'}</span>
                                 </div>
@@ -138,7 +139,7 @@
                             <!-- Team 2 Row -->
                             <div class="team-row ${t2Class}">
                                 <div class="team-info">
-                                    <img src="https://flagcdn.com{(game.team2flag || 'un').toLowerCase()}.png" class="flag-img" alt="">
+                                    <img src="https://flagcdn.com{(game.team2flag || 'un').trim().toLowerCase()}.png" class="flag-img" onerror="this.src='https://flagcdn.com'">
                                     <span class="team-name">${game.team2name || 'TBD'}</span>
                                 </div>
                                 <div class="scores-container">
@@ -147,7 +148,7 @@
                                         ${game.team2q2 ? `<span class="q-score">${game.team2q2}</span>` : ''}
                                         ${game.team2q3 ? `<span class="q-score">${game.team2q3}</span>` : ''}
                                         ${game.team2q4 ? `<span class="q-score">${game.team2q4}</span>` : ''}
-                                        ${hasOT ? `<span class="q-score ot-score">${game.team2ot || '0'}</span>` : ''}
+                                        ${hasOT ? `<span class="q-score ot-score">${game.team2ot}</span>` : ''}
                                     </div>
                                     <span class="total-score">${game.team2total || '-'}</span>
                                 </div>
@@ -159,7 +160,6 @@
             });
         }
 
-        // Run data pipeline and update values automatically every 10 seconds
         fetchLiveScores();
         setInterval(fetchLiveScores, 10000);
     </script>
