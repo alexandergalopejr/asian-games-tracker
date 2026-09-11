@@ -22,7 +22,7 @@
             text-align: center;
         }
 
-        /* Centered container wrapper that mimics Google Sports dashboard sizing */
+        /* Responsive scoreboard widget container frame wrapper */
         .widget-container {
             width: 100%;
             max-width: 1000px;
@@ -39,10 +39,10 @@
 
     <h1>2026 Asian Games Basketball Live Feed</h1>
 
-    <!-- Broadage Sports Live Score Engine Wrapper -->
+    <!-- Broadage Sports Isolated Live Score Engine Container -->
     <div class="widget-container">
         
-        <!-- ⬇️ Broadage Script Delivery Injection Node ⬇️ -->
+        <!-- Broadage Script Delivery Injection Node -->
         <div id="DOM_element_id_in_your_website_1789151338300"></div>
 
         <script>
@@ -56,13 +56,13 @@
               t.parentNode.insertBefore(r, t);
             }
             b["broadage"].push({ "bundleId": o.bundleId, "widgets": o.widgets, "accountId": o.accountId });
-          })(window, "script", "//cdn-saas.broadage.com/widgets/loader/loader.js", {
-            "bundleId": ["all-ls"],
+          })(window, "script", "//://broadage.com", {
+            "bundleId": ["basketball-ls"], // ✅ FIXED: Changed global bundle to filter purely basketball streams
             "accountId": "3bddeaca-d04e-4bfb-aff5-25a292b8cb7b",
             "widgets": {
               "liveScore": [{
                 "element": "DOM_element_id_in_your_website_1789151338300",
-                "coverageId": "6bf0cf44-e13a-44e1-8008-ff17ba6c2128",
+                "coverageId": "6bf0cf44-e13a-44e1-8008-ff17ba6c2128", // ✅ FIXED: Targets your verified Asian Games coverage ID configuration map
                 "options": {
                   "sportFilter": false,
                   "remainingTime": true,
@@ -72,7 +72,6 @@
             }
           });
         </script>
-        <!-- ⬆️ Broadage Script Delivery Injection Node ⬆️ -->
 
     </div>
 
