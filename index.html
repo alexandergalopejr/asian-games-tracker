@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Basketball Live Feed</title>
+    <title>2026 Asian Games Basketball Live Feed</title>
     <style>
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -22,52 +22,59 @@
             text-align: center;
         }
 
-        .widget-frame {
+        /* Centered container wrapper that mimics Google Sports dashboard sizing */
+        .widget-container {
             width: 100%;
             max-width: 1000px;
-            height: 800px;
+            background: #ffffff;
             border: 1px solid #dadce0;
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            background: #ffffff;
+            padding: 10px;
+            box-sizing: border-box;
         }
     </style>
 </head>
 <body>
 
-    <h1>Global Basketball Live Feed</h1>
+    <h1>2026 Asian Games Basketball Live Feed</h1>
 
-    <!-- Securely sandboxed container opening up global tracking configurations -->
-    <iframe class="widget-frame" srcdoc='
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <style>body { margin: 0; padding: 10px; background: #ffffff; }</style>
-            <script src="https://broadage.com"></script>
-        </head>
-        <body>
-            <div id="broadage-global-widget"></div>
-            <script>
-                window.broadage = window.broadage || [];
-                window.broadage.push({
-                    "bundleId": ["basketball-ls"],
-                    "accountId": "3bddeaca-d04e-4bfb-aff5-25a292b8cb7b",
-                    "widgets": {
-                        "liveScore": [{
-                            "element": "broadage-global-widget",
-                            "options": {
-                                "sportFilter": true,
-                                "remainingTime": true,
-                                "sportId": 2
-                            }
-                        }]
-                    }
-                });
-            </script>
-        </body>
-        </html>
-    ' style="border:none;"></iframe>
+    <!-- Broadage Sports Live Score Engine Wrapper -->
+    <div class="widget-container">
+        
+        <!-- ⬇️ Broadage Script Delivery Injection Node ⬇️ -->
+        <div id="DOM_element_id_in_your_website_1789151338300"></div>
+
+        <script>
+          (function(b, s, p, o, r, t) {
+            b["broadage"] = b["broadage"] || [];
+            if (!b["broadage"].length) {
+              r = document.createElement(s);
+              t = document.getElementsByTagName(s)[0];
+              r.async = true;
+              r.src = p;
+              t.parentNode.insertBefore(r, t);
+            }
+            b["broadage"].push({ "bundleId": o.bundleId, "widgets": o.widgets, "accountId": o.accountId });
+          })(window, "script", "//cdn-saas.broadage.com/widgets/loader/loader.js", {
+            "bundleId": ["all-ls"],
+            "accountId": "3bddeaca-d04e-4bfb-aff5-25a292b8cb7b",
+            "widgets": {
+              "liveScore": [{
+                "element": "DOM_element_id_in_your_website_1789151338300",
+                "coverageId": "6bf0cf44-e13a-44e1-8008-ff17ba6c2128",
+                "options": {
+                  "sportFilter": false,
+                  "remainingTime": true,
+                  "sportId": 2
+                }
+              }]
+            }
+          });
+        </script>
+        <!-- ⬆️ Broadage Script Delivery Injection Node ⬆️ -->
+
+    </div>
 
 </body>
 </html>
