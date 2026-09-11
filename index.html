@@ -22,7 +22,6 @@
             text-align: center;
         }
 
-        /* Responsive scoreboard widget container frame wrapper */
         .widget-container {
             width: 100%;
             max-width: 1000px;
@@ -32,6 +31,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             padding: 10px;
             box-sizing: border-box;
+            min-height: 400px; /* Keeps layout structural shape while loader builds */
         }
     </style>
 </head>
@@ -50,19 +50,20 @@
             b["broadage"] = b["broadage"] || [];
             if (!b["broadage"].length) {
               r = document.createElement(s);
-              t = document.getElementsByTagName(s)[0];
               r.async = true;
               r.src = p;
-              t.parentNode.insertBefore(r, t);
+              // ✅ FIXED: Safely injects into document head path to bypass async loader freezes
+              t = document.getElementsByTagName("head")[0] || document.documentElement;
+              t.appendChild(r);
             }
             b["broadage"].push({ "bundleId": o.bundleId, "widgets": o.widgets, "accountId": o.accountId });
-          })(window, "script", "//://broadage.com", {
-            "bundleId": ["basketball-ls"], // ✅ FIXED: Changed global bundle to filter purely basketball streams
+          })(window, "script", "https://broadage.com", {
+            "bundleId": ["basketball-ls"],
             "accountId": "3bddeaca-d04e-4bfb-aff5-25a292b8cb7b",
             "widgets": {
               "liveScore": [{
                 "element": "DOM_element_id_in_your_website_1789151338300",
-                "coverageId": "6bf0cf44-e13a-44e1-8008-ff17ba6c2128", // ✅ FIXED: Targets your verified Asian Games coverage ID configuration map
+                "coverageId": "6bf0cf44-e13a-44e1-8008-ff17ba6c2128",
                 "options": {
                   "sportFilter": false,
                   "remainingTime": true,
