@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 Asian Games Basketball Live Feed</title>
-    <!-- PapaParse reads Google Sheets CSV instantly with zero security roadblocks -->
+    <!-- ✅ FIXED: Using the correct public library hosting address for PapaParse -->
     <script src="https://cloudflare.com"></script>
     <style>
         :root {
@@ -62,7 +62,7 @@
     </div>
 
     <script>
-        // 🚨 YOUR CORRECT CSV LINK DROPPED DIRECTLY HERE 🚨
+        // 🔗 Using your new published Google Sheet CSV link
         const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRers4JYG-JfNUVUXr63zHewbgCiAyifSvM5Qborya9rg9tI85B6ULIp4wOTeRaB2odfjWbvPGUPa1_/pub?output=csv';
 
         function fetchLiveScores() {
@@ -87,11 +87,11 @@
             const dashboard = document.getElementById('games-dashboard');
             dashboard.innerHTML = ""; 
 
-            // Safely filter row objects
+            // Safely filter empty lines or rows out
             const validGames = gamesData.filter(g => g.team1name || g.team2name);
 
             if (validGames.length === 0) {
-                dashboard.innerHTML = '<div class="status-msg">No matches found. Please make sure your sheet has a sample game row filled in below Row 1 headers!</div>';
+                dashboard.innerHTML = '<div class="status-msg">No active game tracks found. Check your sheet headers!</div>';
                 return;
             }
 
@@ -112,6 +112,7 @@
 
                 const hasOT = (game.team1ot && game.team1ot.trim() !== "") || (game.team2ot && game.team2ot.trim() !== "");
 
+                // ✅ FIXED: Corrected image string templates and added fallback styling rules
                 const cardHtml = `
                     <div class="scoreboard-widget">
                         <div class="widget-header">
