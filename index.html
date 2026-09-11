@@ -4,165 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 Asian Games Basketball Live Feed</title>
-    <!-- ✅ FIXED: Using the correct public library hosting address for PapaParse -->
-    <script src="https://cloudflare.com"></script>
     <style>
-        :root {
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-main: #202124;
-            --text-sub: #70757a;
-            --live-color: #d93025;
-            --final-color: #70757a;
-            --upcoming-color: #1a73e8;
-            --border-color: #dadce0;
-        }
-
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: #f8f9fa;
+            color: #202124;
             margin: 0;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        h1 { text-align: center; font-size: 24px; margin-bottom: 24px; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .scoreboard-widget { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
-        .widget-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-sub); font-weight: 500; }
-        
-        .status-badge { font-weight: bold; text-transform: uppercase; }
-        .status-live { color: var(--live-color); display: flex; align-items: center; gap: 4px; }
-        .status-live::before { content: ''; display: inline-block; width: 6px; height: 6px; background-color: var(--live-color); border-radius: 50%; animation: blink 1.5s infinite; }
-        .status-final { color: var(--final-color); }
-        .status-upcoming { color: var(--upcoming-color); }
-        @keyframes blink { 50% { opacity: 0; } }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
 
-        .match-content { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-        .team-row { display: flex; align-items: center; justify-content: space-between; }
-        .winner { font-weight: 700 !important; color: var(--text-main); }
-        .loser { color: var(--text-sub); }
-        .team-info { display: flex; align-items: center; gap: 12px; }
-        .flag-img { width: 28px; height: 20px; object-fit: cover; border-radius: 2px; border: 1px solid #dadce0; }
-        .team-name { font-size: 15px; font-weight: 500; }
-        .scores-container { display: flex; align-items: center; gap: 12px; }
-        .quarter-scores { display: flex; gap: 8px; color: var(--text-sub); font-size: 12px; }
-        .q-score { width: 16px; text-align: center; }
-        .ot-score { color: var(--live-color); font-weight: 600; }
-        .total-score { font-size: 18px; font-weight: 600; width: 30px; text-align: right; }
-        .status-msg { text-align: center; color: var(--text-sub); grid-column: 1 / -1; margin-top: 40px; }
+        /* Centered container wrapper that mimics Google Sports dashboard sizing */
+        .widget-container {
+            width: 100%;
+            max-width: 1000px;
+            background: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 10px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
 
     <h1>2026 Asian Games Basketball Live Feed</h1>
-    
-    <div class="dashboard-grid" id="games-dashboard">
-        <div class="status-msg">Connecting to Google Sheets data engine...</div>
+
+    <!-- Broadage Sports Live Score Engine Wrapper -->
+    <div class="widget-container">
+        
+        <!-- ⬇️ Broadage Script Delivery Injection Node ⬇️ -->
+        <div id="DOM_element_id_in_your_website_1789151338300"></div>
+
+        <script>
+          (function(b, s, p, o, r, t) {
+            b["broadage"] = b["broadage"] || [];
+            if (!b["broadage"].length) {
+              r = document.createElement(s);
+              t = document.getElementsByTagName(s)[0];
+              r.async = true;
+              r.src = p;
+              t.parentNode.insertBefore(r, t);
+            }
+            b["broadage"].push({ "bundleId": o.bundleId, "widgets": o.widgets, "accountId": o.accountId });
+          })(window, "script", "//cdn-saas.broadage.com/widgets/loader/loader.js", {
+            "bundleId": ["all-ls"],
+            "accountId": "3bddeaca-d04e-4bfb-aff5-25a292b8cb7b",
+            "widgets": {
+              "liveScore": [{
+                "element": "DOM_element_id_in_your_website_1789151338300",
+                "coverageId": "6bf0cf44-e13a-44e1-8008-ff17ba6c2128",
+                "options": {
+                  "sportFilter": false,
+                  "remainingTime": true,
+                  "sportId": 2
+                }
+              }]
+            }
+          });
+        </script>
+        <!-- ⬆️ Broadage Script Delivery Injection Node ⬆️ -->
+
     </div>
 
-    <script>
-        // 🔗 Using your new published Google Sheet CSV link
-        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRers4JYG-JfNUVUXr63zHewbgCiAyifSvM5Qborya9rg9tI85B6ULIp4wOTeRaB2odfjWbvPGUPa1_/pub?output=csv';
-
-        function fetchLiveScores() {
-            Papa.parse(GOOGLE_SHEET_CSV_URL, {
-                download: true,
-                header: true,
-                skipEmptyLines: true,
-                transformHeader: function(h) { return h.trim().toLowerCase(); },
-                complete: function(results) {
-                    renderDashboard(results.data);
-                },
-                error: function(err) {
-                    document.getElementById('games-dashboard').innerHTML = `
-                        <div class="status-msg" style="color: var(--live-color);">
-                            Error loading feed. Verify sheet is "Published to web" as a CSV.
-                        </div>`;
-                }
-            });
-        }
-
-        function renderDashboard(gamesData) {
-            const dashboard = document.getElementById('games-dashboard');
-            dashboard.innerHTML = ""; 
-
-            // Safely filter empty lines or rows out
-            const validGames = gamesData.filter(g => g.team1name || g.team2name);
-
-            if (validGames.length === 0) {
-                dashboard.innerHTML = '<div class="status-msg">No active game tracks found. Check your sheet headers!</div>';
-                return;
-            }
-
-            validGames.forEach(game => {
-                const statusStr = (game.status || "").trim().toUpperCase();
-                let statusClass = "status-upcoming";
-                if (statusStr === "LIVE") statusClass = "status-live";
-                if (statusStr === "FINAL") statusClass = "status-final";
-
-                let t1Class = "", t2Class = "";
-                const t1Total = game.team1total ? parseInt(game.team1total) : 0;
-                const t2Total = game.team2total ? parseInt(game.team2total) : 0;
-                
-                if (statusStr === "FINAL") {
-                    t1Class = t1Total > t2Total ? "winner" : "loser";
-                    t2Class = t2Total > t1Total ? "winner" : "loser";
-                }
-
-                const hasOT = (game.team1ot && game.team1ot.trim() !== "") || (game.team2ot && game.team2ot.trim() !== "");
-
-                // ✅ FIXED: Corrected image string templates and added fallback styling rules
-                const cardHtml = `
-                    <div class="scoreboard-widget">
-                        <div class="widget-header">
-                            <span>${game.stage || 'Basketball Tournament'}</span>
-                            <span class="status-badge ${statusClass}">${game.timeinfo || 'Upcoming'}</span>
-                        </div>
-                        <div class="match-content">
-                            <!-- Team 1 Row -->
-                            <div class="team-row ${t1Class}">
-                                <div class="team-info">
-                                    <img src="https://flagcdn.com{(game.team1flag || 'un').trim().toLowerCase()}.png" class="flag-img" onerror="this.src='https://flagcdn.com'">
-                                    <span class="team-name">${game.team1name || 'TBD'}</span>
-                                </div>
-                                <div class="scores-container">
-                                    <div class="quarter-scores">
-                                        ${game.team1q1 ? `<span class="q-score">${game.team1q1}</span>` : ''}
-                                        ${game.team1q2 ? `<span class="q-score">${game.team1q2}</span>` : ''}
-                                        ${game.team1q3 ? `<span class="q-score">${game.team1q3}</span>` : ''}
-                                        ${game.team1q4 ? `<span class="q-score">${game.team1q4}</span>` : ''}
-                                        ${hasOT ? `<span class="q-score ot-score">${game.team1ot}</span>` : ''}
-                                    </div>
-                                    <span class="total-score">${game.team1total || '-'}</span>
-                                </div>
-                            </div>
-                            <!-- Team 2 Row -->
-                            <div class="team-row ${t2Class}">
-                                <div class="team-info">
-                                    <img src="https://flagcdn.com{(game.team2flag || 'un').trim().toLowerCase()}.png" class="flag-img" onerror="this.src='https://flagcdn.com'">
-                                    <span class="team-name">${game.team2name || 'TBD'}</span>
-                                </div>
-                                <div class="scores-container">
-                                    <div class="quarter-scores">
-                                        ${game.team2q1 ? `<span class="q-score">${game.team2q1}</span>` : ''}
-                                        ${game.team2q2 ? `<span class="q-score">${game.team2q2}</span>` : ''}
-                                        ${game.team2q3 ? `<span class="q-score">${game.team2q3}</span>` : ''}
-                                        ${game.team2q4 ? `<span class="q-score">${game.team2q4}</span>` : ''}
-                                        ${hasOT ? `<span class="q-score ot-score">${game.team2ot}</span>` : ''}
-                                    </div>
-                                    <span class="total-score">${game.team2total || '-'}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                dashboard.innerHTML += cardHtml;
-            });
-        }
-
-        fetchLiveScores();
-        setInterval(fetchLiveScores, 10000);
-    </script>
 </body>
 </html>
